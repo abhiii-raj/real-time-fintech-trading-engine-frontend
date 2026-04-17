@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: radial-gradient(circle at 0% 0%, #f5f9ff 0, #ffffff 45%);
+  color: #111827;
+}
+
+:root {
+  --nx-primary: #2563eb;
+  --nx-primary-soft: #eff6ff;
+  --nx-dark: #0f172a;
+  --nx-muted: #6b7280;
+  --nx-border: #e5e7eb;
+  --nx-surface: #ffffff;
+  --nx-surface-soft: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+@keyframes nxFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nx-fade-up {
+  animation: nxFadeUp 0.45s ease both;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+.nav-link{
+  margin-left: 40px;
+}
+
+.link{
+  text-decoration: none;
+  line-height: 2.5;
+}
+
+#supportHero {
+  background-color: rgb(56, 126, 209);
+  color: white;
+}
+
+#supportWrapper {
+  /* display: flex; */
+  /* justify-content: space-between; */
+}
