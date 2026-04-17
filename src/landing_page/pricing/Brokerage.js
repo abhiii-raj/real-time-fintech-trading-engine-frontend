@@ -36,7 +36,7 @@ function Brokerage() {
             .brok-link-card {
                 background: #fff; border: 1px solid #e5e7eb; border-radius: 9px;
                 padding: 18px 20px; text-decoration: none; display: block;
-                transition: border-color 0.15s;
+                transition: border-color 0.15s; cursor: pointer; font-family: 'Inter', sans-serif;
             }
             .brok-link-card:hover { border-color: #9ca3af; }
             .brok-link-name { font-size: 14px; font-weight: 600; color: #111; margin-bottom: 3px; }
@@ -52,14 +52,14 @@ function Brokerage() {
                     </ul>
                 </div>
                 <div className="brok-links">
-                    <a href="#" className="brok-link-card">
+                    <button type="button" className="brok-link-card" onClick={() => {}}>
                         <div className="brok-link-name">Brokerage calculator</div>
                         <div className="brok-link-desc">Estimate your total trading costs</div>
-                    </a>
-                    <a href="#" className="brok-link-card">
+                    </button>
+                    <button type="button" className="brok-link-card" onClick={() => {}}>
                         <div className="brok-link-name">Full list of charges</div>
                         <div className="brok-link-desc">Every fee, explained transparently</div>
-                    </a>
+                    </button>
                 </div>
             </div>
         </section>

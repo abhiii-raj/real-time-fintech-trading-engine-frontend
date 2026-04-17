@@ -203,12 +203,14 @@ function Signup() {
             }
             .auth-btn:hover { background: #333; }
             .auth-switch { font-size: 13px; color: #9ca3af; text-align: center; margin-top: 20px; }
-            .auth-switch-link { color: #2563eb; font-weight: 500; cursor: pointer; text-decoration: none; }
+            .auth-switch-link { color: #2563eb; font-weight: 500; cursor: pointer; text-decoration: none; background: none; border: none; font-family: 'Inter', sans-serif; padding: 0; margin: 0; }
             .auth-switch-link:hover { text-decoration: underline; }
             .auth-divider { border: none; border-top: 1px solid #f3f4f6; margin: 20px 0; }
             .auth-help { text-align: center; }
             .auth-help a { font-size: 13px; color: #9ca3af; text-decoration: none; margin: 0 8px; }
             .auth-help a:hover { color: #111; }
+            .auth-help-btn { font-size: 13px; color: #9ca3af; text-decoration: none; margin: 0 8px; background: none; border: none; cursor: pointer; font-family: 'Inter', sans-serif; padding: 0; }
+            .auth-help-btn:hover { color: #111; }
             .auth-field-row { margin-bottom: 16px; }
             .oauth-btn {
                 width: 100%; padding: 11px; font-size: 14px; font-weight: 500;
@@ -268,8 +270,8 @@ function Signup() {
                         <button type="button" className="oauth-btn" onClick={oauthLogin}><i className="fa fa-google" aria-hidden="true"></i>Continue with Google</button>
                         <hr className="auth-divider" />
                         <div className="auth-help">
-                            <a href="#">Forgot password?</a>
-                            <a href="#">Need help?</a>
+                            <button type="button" className="auth-help-btn" onClick={(e) => e.preventDefault()}>Forgot password?</button>
+                            <button type="button" className="auth-help-btn" onClick={(e) => e.preventDefault()}>Need help?</button>
                         </div>
                     </form>
                 ) : (
@@ -324,7 +326,7 @@ function Signup() {
                         )}
 
                         <div className="auth-switch" style={{marginTop: 16}}>
-                            <span style={{fontSize:12, color:'#9ca3af'}}>By signing up you agree to our <a href="#" className="auth-switch-link">Terms</a></span>
+                            <span style={{fontSize:12, color:'#9ca3af'}}>By signing up you agree to our <button type="button" className="auth-switch-link" onClick={(e) => e.preventDefault()}>Terms</button></span>
                         </div>
                     </form>
                 )}
