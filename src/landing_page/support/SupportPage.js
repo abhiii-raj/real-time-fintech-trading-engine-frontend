@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://real-time-fintech-trading-engine-backend-5ao3.onrender.com';
+
 const categories = [
     { icon: 'fa fa-id-card-o', title: 'Account Opening', links: ['Opening an account', 'Account verification', 'Account types', 'Documents required', 'Getting started'] },
     { icon: 'fa fa-line-chart', title: 'Trading Support', links: ['How to place orders', 'Order types explained', 'Trading hours', 'Portfolio management', 'Risk management'] },
@@ -24,7 +26,7 @@ function SupportPage() {
     const handleSubmit = async e => {
         e.preventDefault(); setLoading(true); setError('');
         try {
-            const res = await fetch('http://localhost:3002/submitSupportQuery', {
+            const res = await fetch(`${API_BASE_URL}/submitSupportQuery`, {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
             });

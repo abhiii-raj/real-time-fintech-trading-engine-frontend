@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://real-time-fintech-trading-engine-backend-5ao3.onrender.com';
+
 function Dashboard() {
     const navigate = useNavigate();
     const [data, setData] = useState({ holdings: [], positions: [], orders: [] });
@@ -16,7 +18,7 @@ function Dashboard() {
 
         const fetchData = async () => {
             try {
-                const resp = await fetch('http://localhost:3002/dashboardData', {
+                const resp = await fetch(`${API_BASE_URL}/dashboardData`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 if (!resp.ok) {
