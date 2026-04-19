@@ -36,6 +36,7 @@ function Signup() {
     const [verifyMsg, setVerifyMsg] = useState('');
     const [verifyError, setVerifyError] = useState('');
     const [showVerifyStep, setShowVerifyStep] = useState(false);
+    const [showLoginVerifyStep, setShowLoginVerifyStep] = useState(false);
     const [showLoginPw, setShowLoginPw] = useState(false);
     const [showSignupPw, setShowSignupPw] = useState(false);
     const [showConfirmPw, setShowConfirmPw] = useState(false);
@@ -56,6 +57,11 @@ function Signup() {
     const handleLoginChange = e => {
         setLoginData(p => ({ ...p, [e.target.name]: e.target.value }));
         setLoginError('');
+        setVerifyError('');
+        setVerifyMsg('');
+        if (e.target.name === 'email') {
+            setShowLoginVerifyStep(false);
+        }
     };
     const handleSignupChange = e => {
         setSignupData(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -71,6 +77,8 @@ function Signup() {
 
     const handleLogin = async e => {
         e.preventDefault();
+        setVerifyMsg('');
+        setVerifyError('');
         if (!loginData.email || !loginData.password) return setLoginError('Please fill in all fields');
         if (!isValidEmail(loginData.email)) return setLoginError('Please enter a valid email address');
         if (loginData.password.length < 6) return setLoginError('Password must be at least 6 characters');
@@ -84,8 +92,78 @@ function Signup() {
                 setLoginSuccess('Login successful! Redirecting…');
                 localStorage.setItem('authToken', data.token);
                 setTimeout(() => { navigate('/portfolio-dashboard'); }, 900);
-            } else setLoginError(data.message || 'Invalid credentials');
+            } else if (res.status === 403 && /verify/i.test(String(data.message || ''))) {
+                setVerifyEmail(String(loginData.email || '').trim().toLowerCase());
+                setShowLoginVerifyStep(true);
+                setVerifyCode('');
+                setVerifyMsg('Enter the code sent to your email to complete login.');
+                setLoginError('');
+            } else {
+                setLoginError(data.message || 'Invalid credentials');
+            }
         } catch { setLoginError('Error contacting server'); }
+    };
+
+    const handleLoginVerifyEmail = async () => {
+        setVerifyError('');
+        setVerifyMsg('');
+
+        const emailForVerify = String(verifyEmail || loginData.email || '').trim().toLowerCase();
+        if (!emailForVerify) {
+            return setVerifyError('Please enter a valid email first');
+        }
+
+        if (!verifyCode || verifyCode.trim().length < 6) {
+            return setVerifyError('Please enter the 6-digit verification code');
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/verify-email`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailForVerify, code: verifyCode.trim() })
+            });
+            const result = await res.json();
+            if (res.ok) {
+                setVerifyMsg(result.message || 'Email verified successfully. Please log in now.');
+                setVerifyCode('');
+                setShowLoginVerifyStep(false);
+                setLoginError('');
+                setLoginData((prev) => ({ ...prev, email: emailForVerify }));
+            } else {
+                setVerifyError(result.message || 'Verification failed');
+            }
+        } catch {
+            setVerifyError('Error contacting server');
+        }
+    };
+
+    const handleLoginResendCode = async () => {
+        setVerifyError('');
+        setVerifyMsg('');
+
+        const emailForVerify = String(verifyEmail || loginData.email || '').trim().toLowerCase();
+        if (!emailForVerify) {
+            return setVerifyError('Please enter your email first');
+        }
+
+        try {
+            const res = await fetch(`${API_BASE_URL}/resend-verification`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: emailForVerify })
+            });
+            const result = await res.json();
+            if (res.ok) {
+                setVerifyMsg(result.message || 'Verification code sent');
+                setShowLoginVerifyStep(true);
+                setVerifyEmail(emailForVerify);
+            } else {
+                setVerifyError(result.message || 'Unable to resend code');
+            }
+        } catch {
+            setVerifyError('Error contacting server');
+        }
     };
 
     const handleSignup = async e => {
@@ -286,6 +364,25 @@ function Signup() {
                         </div>
                         <button type="submit" className="auth-btn" style={{marginTop: 20}}>Log in</button>
                         <button type="button" className="oauth-btn" onClick={oauthLogin}><i className="fa fa-google" aria-hidden="true"></i>Continue with Google</button>
+
+                        {showLoginVerifyStep && (
+                            <div className="verify-box">
+                                <div className="verify-title">Verify before login</div>
+                                <div className="verify-sub">Enter the 6-digit code sent to {verifyEmail || loginData.email}</div>
+                                {verifyError && <div className="auth-alert error" style={{marginBottom: 10}}>{verifyError}</div>}
+                                {verifyMsg && <div className="auth-alert success" style={{marginBottom: 10}}>{verifyMsg}</div>}
+                                <input
+                                    className="auth-input"
+                                    value={verifyCode}
+                                    onChange={e => setVerifyCode(e.target.value)}
+                                    placeholder="Enter verification code"
+                                    maxLength={6}
+                                />
+                                <button type="button" className="auth-btn" style={{marginTop: 10}} onClick={handleLoginVerifyEmail}>Verify code</button>
+                                <button type="button" className="link-btn" onClick={handleLoginResendCode}>Resend code</button>
+                            </div>
+                        )}
+
                         <hr className="auth-divider" />
                         <div className="auth-help">
                             <button type="button" className="auth-help-btn" onClick={(e) => e.preventDefault()}>Forgot password?</button>
